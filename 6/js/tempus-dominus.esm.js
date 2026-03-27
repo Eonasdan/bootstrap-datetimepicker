@@ -1,6 +1,6 @@
 /*!
-  * Tempus Dominus v6.10.0 (https://getdatepicker.com/)
-  * Copyright 2013-2025 Jonathan Peterson
+  * Tempus Dominus v6.10.3 (https://getdatepicker.com/)
+  * Copyright 2013-2026 Jonathan Peterson
   * Licensed under MIT (https://github.com/Eonasdan/tempus-dominus/blob/master/LICENSE)
   */
 class TdError extends Error {
@@ -1880,7 +1880,8 @@ class OptionConverter {
         if (unsupportedOptions.length > 0) {
             const flattenedOptions = OptionConverter.getFlattenDefaultOptions();
             const errors = unsupportedOptions.map((x) => {
-                let error = `"${path}.${x}" in not a known option.`;
+                const d = path ? '.' : '';
+                let error = `"${path}${d}${x}" is not a known option.`;
                 const didYouMean = flattenedOptions.find((y) => y.includes(x));
                 if (didYouMean)
                     error += ` Did you mean "${didYouMean}"?`;
@@ -3435,8 +3436,19 @@ class Display {
                 const container = this.optionsStore.options?.container || document.body;
                 const placement = this.optionsStore.options?.display?.placement || 'bottom';
                 container.appendChild(this.widget);
+                const handleFocus = this._handleFocus.bind(this);
                 this.createPopup(this.optionsStore.element, this.widget, {
-                    modifiers: [{ name: 'eventListeners', enabled: true }],
+                    modifiers: [
+                        { name: 'eventListeners', enabled: true },
+                        {
+                            name: 'focusDate',
+                            enabled: true,
+                            phase: 'afterWrite',
+                            fn() {
+                                handleFocus();
+                            },
+                        },
+                    ],
                     //#2400
                     placement: document.documentElement.dir === 'rtl'
                         ? `${placement}-end`
@@ -3549,7 +3561,7 @@ class Display {
         if (!this._popperInstance)
             return;
         this._popperInstance.update();
-        this._handleFocus();
+        //this._handleFocus();
     }
     /**
      * Changes the calendar view mode. E.g. month <-> year
@@ -3686,7 +3698,10 @@ class Display {
         if (this.optionsStore.options.display.keyboardNavigation) {
             this.widget.removeEventListener('keydown', this._keyboardEventBound);
         }
-        this.optionsStore.toggle.focus();
+        if (this.optionsStore.toggle)
+            this.optionsStore.toggle.focus();
+        else if (this.optionsStore.input)
+            this.optionsStore.input.focus();
     }
     /**
      * Toggles the picker's open state. Fires a show/hide event depending.
@@ -3700,6 +3715,8 @@ class Display {
      */
     _dispose() {
         document.removeEventListener('click', this._documentClickEvent);
+        if (this._popperInstance)
+            this._popperInstance.destroy();
         if (!this.widget)
             return;
         this.widget
@@ -4165,6 +4182,7 @@ class Display {
             tabTargets.push(...calendarHeaderItems);
         };
         const tabTargets = [];
+        console.log(this.optionsStore.currentView);
         switch (this.optionsStore.currentView) {
             case 'clock':
                 {
@@ -5032,7 +5050,7 @@ const extend = function (plugin, option = undefined) {
     }
     return tempusDominus;
 };
-const version = '6.9.4';
+const version = '6.10.3';
 const tempusDominus = {
     TempusDominus,
     extend,

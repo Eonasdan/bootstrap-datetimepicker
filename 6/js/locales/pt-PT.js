@@ -1,6 +1,6 @@
 /*!
-  * Tempus Dominus v6.10.0 (https://getdatepicker.com/)
-  * Copyright 2013-2025 Jonathan Peterson
+  * Tempus Dominus v6.10.3 (https://getdatepicker.com/)
+  * Copyright 2013-2026 Jonathan Peterson
   * Licensed under MIT (https://github.com/Eonasdan/tempus-dominus/blob/master/LICENSE)
   */
 (function(g,f){typeof exports==='object'&&typeof module!=='undefined'?f(exports):typeof define==='function'&&define.amd?define(['exports'],f):(g=typeof globalThis!=='undefined'?globalThis:g||self,f((g.tempusDominus=g.tempusDominus||{},g.tempusDominus.locales=g.tempusDominus.locales||{},g.tempusDominus.locales.pt_PT={})));})(this,(function(exports){'use strict';const name = 'pt-PT';
@@ -31,7 +31,7 @@ const localization = {
     toggleMeridiem: 'Alterar AM/PM',
     selectTime: 'Selecionar hora',
     selectDate: 'Seleccionar data',
-    dayViewHeaderFormat: { month: 'long', year: '2-digits' },
+    dayViewHeaderFormat: { month: 'long', year: '2-digit' },
     startOfTheWeek: 1,
     locale: 'pt-PT',
     dateFormats: {
